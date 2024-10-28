@@ -1,0 +1,40 @@
+from times import compute_overlap_time, time_range
+from pytest import raises
+
+def test_generic_case():
+    large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00")
+    short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60)
+    expected = [("2010-01-12 10:30:00","2010-01-12 10:37:00"), ("2010-01-12 10:38:00", "2010-01-12 10:45:00")]
+    assert compute_overlap_time(large, short) == expected
+
+def test_overlap():
+    large = time_range("2010-01-12 11:00:00", "2010-01-12 12:00:00")
+    short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00")
+    expected = []
+    assert compute_overlap_time(large, short) == expected
+
+def test_several_int():
+    t1 = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00", 2, 60)
+    t2 = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60)
+    expected = [("2010-01-12 10:30:00","2010-01-12 10:37:00"), ("2010-01-12 10:38:00", "2010-01-12 10:45:00")]
+    assert compute_overlap_time(t1,t2) == t2
+
+# two time ranges that end exactly at the same time when the other starts
+
+def test_adjacent():
+    t1 = time_range("2010-01-12 10:45:00", "2010-01-12 12:00:00")
+    t2 = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00")
+    expected = []
+    assert compute_overlap_time(t1,t2)==expected
+
+# Ensure that your main code stops this. Modify time_range to produce an error (ValueError) with a meaningful message when a "backwards" time_range is passed to it - this is called input validation.
+# Write a test that tries to generate a time range for a date going backwards.
+# Use pytest.raises to check for that error in the test.
+# Commit, push and link to this issue (including Answers UCL-COMP0233-24-25/RSE-Classwork#13).
+# What other similar tests could we add?
+
+def test_time_range_inputs():
+    t_start = "2010-01-12 10:45:00"
+    t_end = "2010-01-12 10:00:00"
+    with raises(ValueError):
+        time_range(t_start, t_end)
