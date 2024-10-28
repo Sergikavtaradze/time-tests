@@ -8,20 +8,29 @@ def test_generic_case():
     assert compute_overlap_time(large, short) == expected
 
 def test_overlap():
+    '''
+    Doing a basic functionality check for overlap function
+    Does it find the overlap of 2 normally configured timestamps
+    '''
     large = time_range("2010-01-12 11:00:00", "2010-01-12 12:00:00")
     short = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00")
     expected = []
     assert compute_overlap_time(large, short) == expected
 
 def test_several_int():
+    '''
+    Testing overlap function when several intervals are created
+    '''
     t1 = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00", 2, 60)
     t2 = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60)
     expected = [("2010-01-12 10:30:00","2010-01-12 10:37:00"), ("2010-01-12 10:38:00", "2010-01-12 10:45:00")]
     assert compute_overlap_time(t1,t2) == t2
 
-# two time ranges that end exactly at the same time when the other starts
 
 def test_adjacent():
+    '''
+    Testing two time ranges that end exactly at the same time when the other starts.
+    '''
     t1 = time_range("2010-01-12 10:45:00", "2010-01-12 12:00:00")
     t2 = time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00")
     expected = []
@@ -34,6 +43,10 @@ def test_adjacent():
 # What other similar tests could we add?
 
 def test_time_range_inputs():
+    '''
+    a negative test for the time_range function 
+    to make sure that it throws an error when the start time is after the end time.
+    '''
     t_start = "2010-01-12 10:45:00"
     t_end = "2010-01-12 10:00:00"
     with raises(ValueError):
