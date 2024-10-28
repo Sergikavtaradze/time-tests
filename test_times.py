@@ -1,5 +1,8 @@
 from times import compute_overlap_time, time_range
 from pytest import raises
+import pytest
+
+# It is a convention to name test function starting with 'test_'
 
 def test_generic_case():
     large = time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00")
@@ -51,3 +54,36 @@ def test_time_range_inputs():
     t_end = "2010-01-12 10:00:00"
     with raises(ValueError):
         time_range(t_start, t_end)
+
+# You will need the test function to accept parameters, for example time_range_1,time_range_2 and expected, 
+# let the parametrize decorator 
+# know about it as its first argument and pass a list of tuples of length 3 with the values for each test.
+
+# Parametrizing the test
+@pytest.mark.parametrize("first_range, second_range, expected", 
+                        # Test 1
+                        [(time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00"),
+                        time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60),
+                        [("2010-01-12 10:30:00","2010-01-12 10:37:00"), ("2010-01-12 10:38:00", "2010-01-12 10:45:00")]
+                        ),
+                        
+                        # Test 2
+                        (time_range("2010-01-12 10:45:00", "2010-01-12 12:00:00"), 
+                        time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00"), 
+                        []
+                        ),
+
+                        # Test 3
+                        (time_range("2010-01-12 10:00:00", "2010-01-12 12:00:00", 2, 60), 
+                         time_range("2010-01-12 10:30:00", "2010-01-12 10:45:00", 2, 60), 
+                        [("2010-01-12 10:30:00","2010-01-12 10:37:00"), ("2010-01-12 10:38:00", "2010-01-12 10:45:00")]
+                        )
+                        ]
+                        )
+                        
+
+def test_eval(first_range, second_range, expected):
+    assert compute_overlap_time(first_range, second_range) == expected
+
+
+        
